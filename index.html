@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>目的別クールダウン診断</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:18px;
+ font-family:"Arial","sans-serif";
+ background:linear-gradient(150deg,#e5f5ff,#f2edff);
+ color:#34445b;
+}
+.container{max-width:600px;margin:auto}
+header{text-align:center;padding:25px 8px}
+.illustration{font-size:65px}
+h1{color:#4688c5;font-size:27px;line-height:1.5}
+.sub{color:#70849b;line-height:1.8}
+.card{
+ background:white;padding:20px;
+ border-radius:20px;margin:17px 0;
+ box-shadow:0 5px 18px #779bb522;
+}
+h2{font-size:19px;color:#4688c5}
+h3{color:#4688c5}
+select{
+ width:100%;padding:14px;border:2px solid #d6e9f8;
+ border-radius:12px;background:#f8fcff;
+ font-size:16px;color:#34445b;margin:8px 0;
+}
+.option{
+ display:block;padding:13px;margin:9px 0;
+ border:2px solid #e1edf7;border-radius:12px;
+ line-height:1.5;
+}
+.option:has(input:checked){
+ background:#eaf6ff;border-color:#70b6e8;
+}
+button{
+ width:100%;padding:16px;border:0;
+ border-radius:14px;background:#579ed5;
+ color:white;font-size:17px;font-weight:bold;
+ margin-top:15px;
+}
+button:active{opacity:.8}
+#result{display:none}
+.result-method{
+ background:#eef8ff;padding:16px;
+ border-radius:14px;margin:12px 0;
+}
+.method-icon{text-align:center;font-size:55px}
+.tag{
+ display:inline-block;background:#e4f2ff;
+ color:#4688c5;padding:7px 12px;
+ border-radius:20px;margin:4px;
+ font-size:13px;
+}
+footer{text-align:center;color:#8294a7;font-size:12px;padding:20px}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+<div class="illustration">🏃‍♀️🌈</div>
+<h1>目的別クールダウン診断</h1>
+<p class="sub">
+運動後の身体に合ったクールダウンを見つけよう！<br>
+自分の目的に合わせて診断してみよう✨
+</p>
+</header>
+
+<div class="card">
+<h2>🏅 STEP 1　部活動を選ぼう</h2>
+<select id="sport">
+<option value="">部活動を選択してください</option>
+<option>長距離</option>
+<option>短距離</option>
+<option>サッカー</option>
+<option>バスケ</option>
+<option>野球</option>
+<option>ソフトボール</option>
+<option>バレー</option>
+<option>テニス</option>
+<option>バドミントン</option>
+<option>卓球</option>
+<option>空手</option>
+<option>柔道</option>
+<option>弓道</option>
+</select>
+</div>
+
+<div class="card">
+<h2>💪 STEP 2　運動強度を選ぼう</h2>
+<label class="option"><input type="radio" name="level" value="レベル1（普通）"> レベル1：普通</label>
+<label class="option"><input type="radio" name="level" value="レベル2（ややきつい）"> レベル2：ややきつい</label>
+<label class="option"><input type="radio" name="level" value="レベル3（きつい）"> レベル3：きつい</label>
+</div>
+
+<div class="card">
+<h2>🌷 STEP 3　クールダウンの目的は？</h2>
+<p>一番当てはまるものを選択してね。</p>
+
+<label class="option"><input type="radio" name="goal" value="pain"> ❄️ 炎症部分の痛みの緩和</label>
+<label class="option"><input type="radio" name="goal" value="fatigue"> 🌟 疲労回復</label>
+<label class="option"><input type="radio" name="goal" value="breathing"> 🌬️ 呼吸を整えたい</label>
+<label class="option"><input type="radio" name="goal" value="lactic"> 🏃 乳酸を溜めないようにしたい</label>
+<label class="option"><input type="radio" name="goal" value="muscle"> 💆 筋肉の緊張や関節をほぐしたい</label>
+<label class="option"><input type="radio" name="goal" value="flexibility"> 🧘 体の柔軟性を高めたい</label>
+<label class="option"><input type="radio" name="goal" value="blood"> 💗 血流を良くしたい</label>
+<label class="option"><input type="radio" name="goal" value="relax"> 🌼 身体的・精神的にリラックスしたい</label>
+
+<button onclick="diagnose()">診断結果を見る ✨</button>
+</div>
+
+<div class="card" id="result">
+<h2>🎉 あなたの診断結果</h2>
+<div id="summary"></div>
+<div id="methods"></div>
+<button onclick="location.reload()">もう一度診断する ↻</button>
+</div>
+
+<footer>
+目的に合ったクールダウンをしよう！<br>
+スポーツ探究学習
+</footer>
+</div>
+
+<script>
+const methods={
+ stretch:{
+  icon:"🧘",
+  name:"ストレッチ",
+  how:"反動をつけず、ゆっくり筋肉を伸ばします。無理のない範囲で行いましょう。",
+  effect:"筋肉の緊張を和らげ、柔軟性の維持・向上に役立ちます。"
+ },
+ massage:{
+  icon:"💆",
+  name:"マッサージ",
+  how:"運動で使った筋肉を痛みのない範囲で優しくほぐします。",
+  effect:"筋肉の張りを和らげ、リラックスを促すことが期待できます。"
+ },
+ icing:{
+  icon:"🧊",
+  name:"アイシング",
+  how:"必要な部分をタオル越しに短時間冷やします。冷やしすぎないように注意しましょう。",
+  effect:"炎症を伴う局所的な痛みを和らげることがあります。"
+ },
+ jogging:{
+  icon:"🏃",
+  name:"ジョギング",
+  how:"運動後にゆっくりしたペースで軽く走るか、歩いて身体を落ち着かせます。",
+  effect:"急に運動を止めず、心拍数や呼吸を徐々に落ち着かせるのに役立ちます。"
+ }
+};
+
+const recommendations={
+ pain:["icing"],
+ fatigue:["jogging","massage"],
+ breathing:["jogging"],
+ lactic:["jogging"],
+ muscle:["stretch","massage"],
+ flexibility:["stretch"],
+ blood:["jogging","massage"],
+ relax:["stretch","massage"]
+};
+
+const goalNames={
+ pain:"炎症部分の痛みの緩和",
+ fatigue:"疲労回復",
+ breathing:"呼吸を整えたい",
+ lactic:"乳酸を溜めないようにしたい",
+ muscle:"筋肉の緊張や関節をほぐしたい",
+ flexibility:"体の柔軟性を高めたい",
+ blood:"血流を良くしたい",
+ relax:"身体的・精神的にリラックスしたい"
+};
+
+function diagnose(){
+ const sport=document.getElementById("sport").value;
+ const level=document.querySelector('input[name="level"]:checked');
+ const goal=document.querySelector('input[name="goal"]:checked');
+
+ if(!sport||!level||!goal){
+  alert("部活動・運動強度・目的をすべて選択してね！");
+  return;
+ }
+
+ const selected=recommendations[goal.value];
+ const result=document.getElementById("result");
+
+ document.getElementById("summary").innerHTML=
+ `<div class="result-method">
+ <span class="tag">${sport}</span>
+ <span class="tag">${level.value}</span>
+ <p><b>選んだ目的：</b>${goalNames[goal.value]}</p>
+ </div>
+ <h3>🌟 おすすめの方法</h3>`;
+
+ const area=document.getElementById("methods");
+ area.innerHTML="";
+
+ selected.forEach(key=>{
+  const m=methods[key];
+  area.innerHTML+=`
+  <div class="result-method">
+   <div class="method-icon">${m.icon}</div>
+   <h3 style="text-align:center">${m.name}</h3>
+   <p><b>実施方法</b><br>${m.how}</p>
+   <p><b>期待できる効果</b><br>${m.effect}</p>
+  </div>`;
+ });
+
+ result.style.display="block";
+ result.scrollIntoView({behavior:"smooth"});
+}
+</script>
+</body>
+</html>
